@@ -1,57 +1,52 @@
 {% extends "base.html" %}
 
-{% block title %}Página No Encontrada{% endblock %}
-
-{% block page_header %}
-<div class="row">
-    <div class="col-12">
-        <h1 class="display-1 text-center">
-            <i class="fas fa-exclamation-triangle text-warning"></i> 404
-        </h1>
-        <h2 class="text-center text-muted">Página No Encontrada</h2>
-        <p class="text-center text-muted">La página que buscas no existe o ha sido movida</p>
-    </div>
-</div>
-{% endblock %}
+{% block title %}404 - Recurso No Encontrado{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-8 text-center">
-        <!-- Tarjeta de error -->
-        <div class="card border-warning">
-            <div class="card-body py-5">
-                <i class="fas fa-search fa-4x text-muted mb-4"></i>
-                <h4 class="text-muted mb-3">Oops... No encontramos lo que buscas</h4>
-                <p class="text-muted mb-4">
-                    Es posible que la página haya sido eliminada, el nombre haya cambiado 
-                    o no esté disponible temporalmente.
+        <!-- Encabezado de Error -->
+        <div class="mb-4">
+            <h1 class="display-1 fw-bold text-warning">
+                <i class="fas fa-exclamation-triangle"></i> 404
+            </h1>
+            <h2 class="text-dark">Oops... Página No Encontrada</h2>
+            <p class="lead text-muted">La ruta solicitada no existe en el ecosistema de Innovatech.</p>
+        </div>
+
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <i class="fas fa-map-signs fa-4x text-info opacity-50"></i>
+                </div>
+                <h4 class="mb-3">¿Qué pudo haber pasado?</h4>
+                <p class="text-muted">
+                    Es posible que el enlace esté roto, la página haya sido movida 
+                    o el recurso ya no esté disponible en el servidor.
                 </p>
                 
-                <!-- Botones de acción -->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                    <a href="{{ url_for('index') }}" class="btn btn-primary">
-                        <i class="fas fa-home"></i> Ir al Inicio
+                <hr class="my-4">
+                
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-home me-2"></i> Volver al Dashboard
                     </a>
-                    <a href="{{ url_for('crear_usuario_form') }}" class="btn btn-success">
-                        <i class="fas fa-user-plus"></i> Crear Usuario
+                    <a href="{{ url_for('crear_usuario_form') }}" class="btn btn-outline-success btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i> Registrar Usuario
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Sugerencias -->
-        <div class="card mt-3 bg-light">
-            <div class="card-body">
-                <h6 class="card-title">
-                    <i class="fas fa-lightbulb text-info"></i> Sugerencias
-                </h6>
-                <ul class="text-start text-muted">
-                    <li>Verifica que la URL esté escrita correctamente</li>
-                    <li>Utiliza el menú de navegación para encontrar lo que buscas</li>
-                    <li>Vuelve a la página principal y navega desde allí</li>
-                    <li>Si crees que esto es un error, contacta al administrador</li>
-                </ul>
-            </div>
+        <div class="alert alert-light border shadow-sm text-start">
+            <h6 class="alert-heading fw-bold">
+                <i class="fas fa-lightbulb text-warning me-2"></i> Sugerencias de navegación:
+            </h6>
+            <ul class="mb-0 text-muted small">
+                <li>Revisa si hay errores tipográficos en la barra de direcciones.</li>
+                <li>Utiliza el menú lateral para acceder a los módulos de gestión.</li>
+                <li>Si el problema persiste, contacta al soporte técnico de <strong>Fit Project</strong>.</li>
+            </ul>
         </div>
     </div>
 </div>

@@ -1,7 +1,10 @@
 # Frontend - Aplicación Web con Flask
 
 ## Descripción
-Frontend desarrollado en Python con el framework Flask que proporciona una interfaz web moderna para la gestión de usuarios. Esta solución ha sido diseñada específicamente para operar en una arquitectura de tres capas en AWS, utilizando contenedores Docker para asegurar la escalabilidad, portabilidad y el aislamiento de componentes solicitado por Innovatech.
+Esta capa representa la interfaz de usuario del Fit Project, desarrollada en Python utilizando el framework Flask. Ha sido diseñada bajo una arquitectura stateless (sin estado) para integrarse con la API Backend en una infraestructura de red segmentada dentro de AWS.
+
+## Arquitectura de Despliegue (CI/CD)
+El ciclo de vida del Frontend está completamente automatizado mediante GitHub Actions, garantizando que cada mejora en la rama deploy se refleje en producción de forma segura.
 
 ## Versiones y Herramientas Requeridas
 
@@ -80,13 +83,13 @@ Para el componente Frontend, se ha determinado el siguiente esquema de persisten
 
 ## Seguridad y Mínimo Privilegio
 
-Siguiendo los estándares de seguridad solicitados, la contenedorización del frontend aplica las siguientes buenas prácticas:
+Para cumplir con los estándares de seguridad de Innovatech Chile, se han implementado las siguientes medidas en el Dockerfile:
 
-- **Usuario No-Root**: El Dockerfile está configurado para ejecutar la aplicación bajo un usuario con privilegios limitados. Esto evita que, en caso de una vulnerabilidad, un atacante obtenga acceso total al contenedor o al host.
+- **Usuario No-Root**: La aplicación corre bajo el usuario flaskuser. Esto mitiga riesgos de escalada de privilegios en caso de una vulnerabilidad en el código.
 
-- **Gestión de Secretos**: No se almacenan credenciales ni llaves SSH en el repositorio. Se utilizan GitHub Secrets para inyectar variables sensibles durante el pipeline de despliegue.
+- **Aislamiento de Red**: El contenedor se comunica con el Backend a través de una red interna de Docker (innovatech-net), limitando la exposición del tráfico de datos.
 
-- **Imagen Optimizada**: Uso de multi-stage builds para asegurar que la imagen final solo contenga el binario y las dependencias necesarias, reduciendo la superficie de ataque.
+- **Inyección de Secretos**: La SECRET_KEY y el BACKEND_URL nunca se guardan en el código, se inyectan en tiempo de ejecución.
 
 ## Pipeline de Despliegue Continuo (CI/CD)
 
@@ -97,6 +100,16 @@ El proyecto utiliza **GitHub Actions** para automatizar el ciclo de vida del sof
     *   La imagen se publica en el registro (Docker Hub/ECR).
     *   Se realiza una conexión segura vía SSH a la instancia EC2 de AWS.
     *   Se ejecuta un script de despliegue que realiza el `pull` de la nueva imagen y reinicia el contenedor con la versión actualizada.
+
+```yaml
+# Fragmento del flujo de despliegue
+- name: Build and Push
+  uses: docker/build-push-action@v4
+  with:
+    context: .
+    push: true
+    tags: ${{ secrets.DOCKERHUB_USERNAME }}/front-innovatech:latest
+```
 
 ## Estructura del Proyecto
 
@@ -149,6 +162,14 @@ usuarios = response.json()
 
 # Ejemplo de petición POST para crear usuario
 response = requests.post(f'{BACKEND_URL}/api/usuarios', json=datos_usuario)
+```
+
+## Comunicación Inter-servicios
+La interfaz consume la API REST del Backend mediante la librería requests. Se implementa manejo de errores para los códigos 404 y 500, asegurando que el usuario final reciba una respuesta amigable ante fallos en la capa de datos.
+
+```python
+# Ejemplo de consumo de API interna
+response = requests.get(f'{BACKEND_URL}/api/usuarios')
 ```
 
 ## Puertos Requeridos

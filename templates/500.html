@@ -1,83 +1,61 @@
 {% extends "base.html" %}
 
-{% block title %}Error del Servidor{% endblock %}
-
-{% block page_header %}
-<div class="row">
-    <div class="col-12">
-        <h1 class="display-1 text-center">
-            <i class="fas fa-exclamation-circle text-danger"></i> 500
-        </h1>
-        <h2 class="text-center text-muted">Error Interno del Servidor</h2>
-        <p class="text-center text-muted">Ha ocurrido un error inesperado en el sistema</p>
-    </div>
-</div>
-{% endblock %}
+{% block title %}500 - Error del Servidor{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
     <div class="col-md-8 text-center">
-        <!-- Tarjeta de error -->
-        <div class="card border-danger">
-            <div class="card-body py-5">
-                <i class="fas fa-server fa-4x text-muted mb-4"></i>
-                <h4 class="text-muted mb-3">Algo salió mal...</h4>
+        <div class="mb-4">
+            <h1 class="display-1 fw-bold text-danger">
+                <i class="fas fa-microchip"></i> 500
+            </h1>
+            <h2 class="text-dark">Fallo Crítico en el Sistema</h2>
+            <p class="lead text-muted">Algo salió mal en nuestros servidores de <strong>Innovatech Chile</strong>.</p>
+        </div>
+
+        <div class="card shadow border-danger mb-4">
+            <div class="card-body p-5">
+                <i class="fas fa-server fa-4x text-danger opacity-25 mb-4"></i>
+                <h4 class="text-dark mb-3">Estamos experimentando turbulencia técnica</h4>
                 <p class="text-muted mb-4">
-                    Estamos experimentando problemas técnicos. 
-                    Nuestro equipo ha sido notificado y está trabajando para solucionarlo.
+                    Nuestro equipo de monitoreo ha sido notificado automáticamente. 
+                    Este error suele ser temporal mientras se restablece el microservicio.
                 </p>
                 
-                <!-- Botones de acción -->
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                    <button onclick="location.reload()" class="btn btn-warning me-md-2">
-                        <i class="fas fa-sync"></i> Recargar Página
+                <div class="d-grid gap-3 d-md-flex justify-content-md-center">
+                    <button onclick="location.reload()" class="btn btn-warning btn-lg px-4 text-white">
+                        <i class="fas fa-sync-alt me-2"></i> Intentar de nuevo
                     </button>
-                    <a href="{{ url_for('index') }}" class="btn btn-primary">
-                        <i class="fas fa-home"></i> Ir al Inicio
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-lg px-4">
+                        <i class="fas fa-home me-2"></i> Panel Principal
                     </a>
                 </div>
             </div>
         </div>
 
-        <!-- Información técnica -->
-        <div class="card mt-3 bg-light">
-            <div class="card-body">
-                <h6 class="card-title">
-                    <i class="fas fa-info-circle text-info"></i> ¿Qué puedes hacer?
-                </h6>
-                <ul class="text-start text-muted">
-                    <li>Intenta recargar la página en unos minutos</li>
-                    <li>Verifica tu conexión a internet</li>
-                    <li>Si el problema persiste, contacta al soporte técnico</li>
-                    <li>Puedes intentar acceder más tarde cuando el sistema esté estable</li>
-                </ul>
+        <div class="card bg-light border-0 shadow-sm mb-4">
+            <div class="card-header bg-dark text-white text-start py-3">
+                <h6 class="mb-0"><i class="fas fa-network-wired me-2"></i> Monitor de Infraestructura (Diagnóstico Rápido)</h6>
             </div>
-        </div>
-
-        <!-- Estado del sistema -->
-        <div class="card mt-3 border-info">
-            <div class="card-body">
-                <h6 class="card-title text-info">
-                    <i class="fas fa-cog"></i> Estado del Sistema
-                </h6>
-                <div class="row">
-                    <div class="col-md-4">
-                        <small class="text-muted">
-                            <strong>Frontend:</strong> 
-                            <span class="badge bg-success">Activo</span>
-                        </small>
+            <div class="card-body py-4">
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded bg-white">
+                            <span class="d-block text-muted small uppercase fw-bold mb-1">Frontend</span>
+                            <span class="badge rounded-pill bg-success px-3">OPERATIVO</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 border rounded bg-white">
+                            <span class="d-block text-muted small uppercase fw-bold mb-1">Backend API</span>
+                            <span class="badge rounded-pill bg-warning text-dark px-3">REVISANDO</span>
+                        </div>
                     </div>
                     <div class="col-md-4">
-                        <small class="text-muted">
-                            <strong>Backend:</strong> 
-                            <span class="badge bg-warning">Revisando</span>
-                        </small>
-                    </div>
-                    <div class="col-md-4">
-                        <small class="text-muted">
-                            <strong>Base de Datos:</strong> 
-                            <span class="badge bg-secondary">Desconocido</span>
-                        </small>
+                        <div class="p-3 border rounded bg-white">
+                            <span class="d-block text-muted small uppercase fw-bold mb-1">DB MySQL</span>
+                            <span class="badge rounded-pill bg-secondary px-3">DESCONECTADO</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,17 +66,9 @@
 
 {% block extra_js %}
 <script>
-// Auto-recargar la página después de 30 segundos
-setTimeout(function() {
-    if (confirm('¿Deseas recargar la página automáticamente?')) {
-        location.reload();
-    }
-}, 30000);
-
-// Mostrar hora del error
-document.addEventListener('DOMContentLoaded', function() {
-    const ahora = new Date();
-    console.log('Error 500 detectado a las:', ahora.toLocaleString());
-});
+    document.addEventListener('DOMContentLoaded', () => {
+        const timestamp = new Date().toISOString();
+        console.error(`[CRITICAL ERROR 500] Detectado en Innovatech-Cloud: ${timestamp}`);
+    });
 </script>
 {% endblock %}

@@ -149,11 +149,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Mostrar mensaje de error si hay problemas
         if (!isValid) {
-            e.preventDefault();
-            alert(errorMessage);
-        }
+    e.preventDefault();
+    if (nombreInput.value.trim().length < 2) nombreInput.classList.add('is-invalid');
+    if (!emailRegex.test(emailInput.value)) emailInput.classList.add('is-invalid');
+    
+    alert(errorMessage);
+}
     });
 
     // Limpiar mensaje de error cuando el usuario empieza a escribir
