@@ -16,15 +16,13 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8 col-lg-6">
-        <!-- Tarjeta del formulario -->
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-header bg-warning text-dark">
                 <h5 class="mb-0">
                     <i class="fas fa-user-edit"></i> Editar Datos de Usuario
                 </h5>
             </div>
             <div class="card-body">
-                <!-- Información del usuario actual -->
                 <div class="alert alert-info mb-3">
                     <small class="mb-0">
                         <i class="fas fa-info-circle"></i> 
@@ -32,9 +30,7 @@
                     </small>
                 </div>
 
-                <!-- Formulario de edición de usuario -->
-                <form method="POST" action="{{ url_for('editar_usuario', usuario_id=usuario.id) }}" id="editarUsuarioForm">
-                    <!-- Campo Nombre -->
+                <form method="POST" action="{{ url_for('editar_usuario', usuario_id=usuario.id) }}" id="editarUsuarioForm" novalidate>
                     <div class="mb-3">
                         <label for="nombre" class="form-label">
                             <i class="fas fa-user"></i> Nombre Completo
@@ -48,12 +44,14 @@
                                placeholder="Ej: Juan Pérez"
                                required
                                maxlength="100">
+                        <div class="invalid-feedback" id="nombreFeedback">
+                            El nombre debe tener al menos 2 caracteres.
+                        </div>
                         <div class="form-text">
                             Ingresa el nombre completo del usuario (máximo 100 caracteres)
                         </div>
                     </div>
 
-                    <!-- Campo Email -->
                     <div class="mb-3">
                         <label for="email" class="form-label">
                             <i class="fas fa-envelope"></i> Correo Electrónico
@@ -67,12 +65,14 @@
                                placeholder="Ej: juan@ejemplo.com"
                                required
                                maxlength="150">
+                        <div class="invalid-feedback" id="emailFeedback">
+                            Por favor, ingresa una dirección de correo válida.
+                        </div>
                         <div class="form-text">
                             Ingresa una dirección de correo válida
                         </div>
                     </div>
 
-                    <!-- Campo Edad -->
                     <div class="mb-4">
                         <label for="edad" class="form-label">
                             <i class="fas fa-birthday-cake"></i> Edad
@@ -86,19 +86,19 @@
                                placeholder="Ej: 25"
                                min="1"
                                max="150">
+                        <div class="invalid-feedback">
+                            La edad debe estar entre 1 y 150 años.
+                        </div>
                         <div class="form-text">
                             Ingresa la edad del usuario (opcional)
                         </div>
                     </div>
 
-                    <!-- Botones de acción -->
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <!-- Botón Cancelar -->
-                        <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2" id="btnCancelar">
                             <i class="fas fa-arrow-left"></i> Cancelar
                         </a>
                         
-                        <!-- Botón Actualizar -->
                         <button type="submit" class="btn btn-warning">
                             <i class="fas fa-save"></i> Actualizar Usuario
                         </button>
@@ -107,19 +107,18 @@
             </div>
         </div>
 
-        <!-- Tarjeta de información del usuario -->
         <div class="card mt-3 bg-light">
             <div class="card-body">
                 <h6 class="card-title">
-                    <i class="fas fa-info-circle text-info"></i> Datos Actuales
+                    <i class="fas fa-info-circle text-info"></i> Datos Actuales en Sistema
                 </h6>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <small class="text-muted">
                             <strong>ID:</strong> {{ usuario.id }}
                         </small>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 mb-2">
                         <small class="text-muted">
                             <strong>Nombre:</strong> {{ usuario.nombre }}
                         </small>
@@ -143,16 +142,15 @@
             </div>
         </div>
 
-        <!-- Tarjeta de advertencia -->
-        <div class="card mt-3 border-warning">
+        <div class="card mt-3 border-warning bg-light-subtle">
             <div class="card-body">
-                <h6 class="card-title text-warning">
-                    <i class="fas fa-exclamation-triangle"></i> Advertencia
+                <h6 class="card-title text-warning-emphasis fw-bold">
+                    <i class="fas fa-exclamation-triangle"></i> Advertencia de Sincronización
                 </h6>
-                <small class="text-muted">
-                    Al hacer clic en "Actualizar Usuario", los cambios se guardarán inmediatamente 
-                    y estarán disponibles para todos los usuarios del sistema.
-                </small>
+                <p class="card-text small text-muted mb-0">
+                    Al hacer clic en "Actualizar Usuario", los cambios se guardarán inmediatamente en el API centralizado 
+                    y afectarán a los datos de la infraestructura productiva.
+                </p>
             </div>
         </div>
     </div>
@@ -166,87 +164,99 @@ document.addEventListener('DOMContentLoaded', function() {
     const nombreInput = document.getElementById('nombre');
     const emailInput = document.getElementById('email');
     const edadInput = document.getElementById('edad');
+    const btnCancelar = document.getElementById('btnCancelar');
 
-    // Guardar valores originales para detectar cambios
+    // Estado inicial para control de cambios
+    let hayCambiosSinGuardar = false;
     const valoresOriginales = {
-        nombre: nombreInput.value,
-        email: emailInput.value,
+        nombre: nombreInput.value.trim(),
+        email: emailInput.value.trim().toLowerCase(),
         edad: edadInput.value
     };
 
-    // Validación del formulario antes de enviar
+    // Auxiliar para limpiar estilos inválidos
+    function limpiarErrores() {
+        [nombreInput, emailInput, edadInput].forEach(input => {
+            input.classList.remove('is-invalid');
+        });
+    }
+
+    // Validación del formulario
     form.addEventListener('submit', function(e) {
+        limpiarErrores();
         let isValid = true;
-        let errorMessage = '';
 
-        // Validar nombre (no vacío y mínimo 2 caracteres)
+        // 1. Validar nombre
         if (nombreInput.value.trim().length < 2) {
-            errorMessage = 'El nombre debe tener al menos 2 caracteres';
+            nombreInput.classList.add('is-invalid');
             isValid = false;
         }
 
-        // Validar email (formato básico)
+        // 2. Validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(emailInput.value)) {
-            errorMessage = 'Por favor, ingresa un email válido';
+        if (!emailRegex.test(emailInput.value.trim())) {
+            emailInput.classList.add('is-invalid');
             isValid = false;
         }
 
-        // Validar edad (si se proporciona)
+        // 3. Validar edad (solo si contiene datos)
         if (edadInput.value) {
-            const edad = parseInt(edadInput.value);
-            if (edad < 1 || edad > 150) {
-                errorMessage = 'La edad debe estar entre 1 y 150 años';
+            const edad = parseInt(edadInput.value, 10);
+            if (isNaN(edad) || edad < 1 || edad > 150) {
+                edadInput.classList.add('is-invalid');
                 isValid = false;
             }
         }
 
-        // Verificar si hay cambios
-        const hayCambios = (
-            nombreInput.value !== valoresOriginales.nombre ||
-            emailInput.value !== valoresOriginales.email ||
-            edadInput.value !== valoresOriginales.edad
-        );
-
-        if (!hayCambios) {
-            errorMessage = 'No se han detectado cambios en los datos';
-            isValid = false;
-        }
-
-        // Mostrar mensaje de error si hay problemas
+        // Si la data no es válida, frenar el submit de inmediato
         if (!isValid) {
             e.preventDefault();
-            alert(errorMessage);
+            return;
+        }
+
+        // 4. Evaluar si realmente existieron cambios
+        // 4. Evaluar si realmente existieron cambios
+        const actualNombre = nombreInput.value.trim();
+        const actualEmail = emailInput.value.trim().toLowerCase();
+        const actualEdad = edadInput.value;
+
+        const hayCambios = (
+            actualNombre !== valoresOriginales.nombre ||
+            actualEmail !== valoresOriginales.email ||
+            actualEdad !== valoresOriginales.edad
+        );
+
+        // Optimización UX: Si no cambió nada, no desgastamos el API, redirigimos limpiamente
+        if (!hayCambios) {
+            e.preventDefault();
+            hayCambiosSinGuardar = false; // Desactiva el interceptor beforeunload
+            window.location.href = btnCancelar.getAttribute('href');
+        } else {
+            // Si todo está correcto y hay cambios, permitimos el submit quitando alertas
+            hayCambiosSinGuardar = false;
         }
     });
 
-    // Limpiar mensaje de error cuando el usuario empieza a escribir
+    // Escuchar inputs para limpiar dinámicamente las clases inválidas de Bootstrap
     [nombreInput, emailInput, edadInput].forEach(input => {
         input.addEventListener('input', function() {
             this.classList.remove('is-invalid');
-        });
-    });
+            const actualNombre = nombreInput.value.trim();
+            const actualEmail = emailInput.value.trim().toLowerCase();
+            const actualEdad = edadInput.value;
 
-    // Formatear automáticamente el email a minúsculas
-    emailInput.addEventListener('blur', function() {
-        this.value = this.value.toLowerCase();
-    });
-
-    // Advertencia si el usuario intenta salir con cambios sin guardar
-    let hayCambiosSinGuardar = false;
-    
-    // Detectar cambios en los campos
-    [nombreInput, emailInput, edadInput].forEach(input => {
-        input.addEventListener('change', function() {
             hayCambiosSinGuardar = (
-                nombreInput.value !== valoresOriginales.nombre ||
-                emailInput.value !== valoresOriginales.email ||
-                edadInput.value !== valoresOriginales.edad
+                actualNombre !== valoresOriginales.nombre ||
+                actualEmail !== valoresOriginales.email ||
+                actualEdad !== valoresOriginales.edad
             );
         });
     });
 
-    // Advertencia al intentar salir de la página
+    emailInput.addEventListener('blur', function() {
+        this.value = this.value.trim().toLowerCase();
+    });
+
     window.addEventListener('beforeunload', function(e) {
         if (hayCambiosSinGuardar) {
             e.preventDefault();

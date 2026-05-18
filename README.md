@@ -1,7 +1,7 @@
 # Frontend - Aplicación Web con Flask
 
 ## Descripción
-Esta capa representa la interfaz de usuario del Fit Project, desarrollada en Python utilizando el framework Flask. Ha sido diseñada bajo una arquitectura stateless (sin estado) para integrarse con la API Backend en una infraestructura de red segmentada dentro de AWS.
+Esta capa representa la interfaz de usuario del Innovatech, desarrollada en Python utilizando el framework Flask. Ha sido diseñada bajo una arquitectura stateless (sin estado) para integrarse con la API Backend en una infraestructura de red segmentada dentro de AWS.
 
 ## Arquitectura de Despliegue (CI/CD)
 El ciclo de vida del Frontend está completamente automatizado mediante GitHub Actions, garantizando que cada mejora en la rama deploy se refleje en producción de forma segura.
@@ -129,7 +129,7 @@ frontend/
 │   ├── index.html        # Dashboard principal y lista de usuarios
 │   ├── crear_usuario.html # Vista de registro
 │   ├── editar_usuario.html # Vista de modificación
-│   ├── 404.html          # # Manejo de error: Recurso no encontrado
+│   ├── 404.html          # # Manejo de error
 │   └── 500.html          # Manejo de error: Fallo interno del servidor
 ├── static/               # Archivos estáticos (CSS, JS, imágenes)
 └── README.md             # Documentación técnica del sistema
@@ -164,14 +164,6 @@ usuarios = response.json()
 response = requests.post(f'{BACKEND_URL}/api/usuarios', json=datos_usuario)
 ```
 
-## Comunicación Inter-servicios
-La interfaz consume la API REST del Backend mediante la librería requests. Se implementa manejo de errores para los códigos 404 y 500, asegurando que el usuario final reciba una respuesta amigable ante fallos en la capa de datos.
-
-```python
-# Ejemplo de consumo de API interna
-response = requests.get(f'{BACKEND_URL}/api/usuarios')
-```
-
 ## Puertos Requeridos
 
 Para asegurar la conectividad en el ecosistema de Innovatech Chile, se han definido los siguientes puertos tanto para la ejecución local como para el despliegue en contenedores:
@@ -181,7 +173,7 @@ Para asegurar la conectividad en el ecosistema de Innovatech Chile, se han defin
 - **Puerto 8000**: Puerto de comunicación con la API Backend (Subred Privada).
 
 ### Explicación de puertos:
-- **5000**: Es el puerto donde el servidor Flask escucha para servir la aplicación web. En el despliegue de AWS, este se mapea al puerto 80 de la instancia pública para permitir el acceso vía HTTP.
+- **5000**: Es el puerto donde el servidor Flask escucha para servir la aplicación web. En el despliegue de AWS, este puerto se expone directamente a través del Security Group de la instancia pública para permitir el acceso directo vía HTTP en el puerto 5000.
 - **8000**: Representa el puerto de escucha del Backend API al que el Frontend se conecta para el intercambio de datos.
 
 ## Variables de Entorno

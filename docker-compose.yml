@@ -13,6 +13,8 @@ services:
       - PORT=5000
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - vpc_front_logs:/app/logs
     restart: always
     networks:
       - innovatech-net
