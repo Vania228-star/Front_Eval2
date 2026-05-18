@@ -117,7 +117,7 @@ La organización del código sigue una estructura modular para facilitar la mant
 
 ```
 frontend/
-├── .github/workflows/    # Pipeline CI/CD (GitHub Actions)
+├── .github/workflows/frontend-deploy.yml    # Pipeline CI/CD (GitHub Actions)
 ├── app.py                 # Aplicación principal Flask
 ├── requirements.txt       # Dependencias del proyecto
 ├── .env.example          # Ejemplo de variables de entorno
