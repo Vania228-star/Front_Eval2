@@ -10,7 +10,7 @@ services:
       - "80:5000"
     environment:
       # CAMBIO: Ahora puedes usar el nombre del servicio 'backend' en vez de la IP rígida
-      - BACKEND_URL=http://backend:8000 
+      - BACKEND_URL=http://http://18.234.220.77:8000
       - PORT=5000
       - DEBUG=False
       - SECRET_KEY=${SECRET_KEY}
