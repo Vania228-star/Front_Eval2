@@ -2,162 +2,59 @@
 
 {% block title %}Lista de Usuarios{% endblock %}
 
-{% block page_header %}
+{% block content %}
 <div class="container mt-4">
-    <h1 class="display-4 text-center">
+    <h1 class="display-4 text-center mb-4">
         <i class="fas fa-users text-primary"></i> Lista de Usuarios
     </h1>
-    <p class="text-center text-muted">Gestión completa de usuarios del sistema</p>
-</div>
-{% endblock %}
 
-{% block content %}
-<div class="container">
-    <!-- Botón para crear nuevo usuario -->
-    <div class="row mb-4">
-        <div class="col-12 text-center">
-            <a href="{{ url_for('crear_usuario_form') }}" class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-user-plus"></i> Crear Nuevo Usuario
-            </a>
-        </div>
+    <div class="text-center mb-5">
+        <a href="{{ url_for('crear_usuario_form') }}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="fas fa-user-plus"></i> Crear Nuevo Usuario
+        </a>
     </div>
 
-    <!-- Lista de usuarios -->
-    <div class="row">
-        <div class="col-12">
-            {% if usuarios %}
-                <div class="card shadow">
-                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fas fa-list"></i> Usuarios Registrados
-                        </h5>
-                        <span class="badge bg-primary rounded-pill">{{ usuarios|length }}</span>
-                    </div>
-                    <div class="card-body">
-                        <!-- Tabla de usuarios -->
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped align-middle">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Nombre</th>
-                                        <th scope="col">Email</th>
-                                        <th scope="col">Edad</th>
-                                        <th scope="col" class="text-center">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for usuario in usuarios %}
-                                    <tr>
-                                        <td>
-                                            <span class="badge bg-secondary">{{ usuario.id }}</span>
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-user text-primary me-2"></i>
-                                            {{ usuario.nombre }}
-                                        </td>
-                                        <td>
-                                            <i class="fas fa-envelope text-info me-2"></i>
-                                            {{ usuario.email }}
-                                        </td>
-                                        <td>
-                                            {% if usuario.edad %}
-                                                <span class="badge bg-success">{{ usuario.edad }} años</span>
-                                            {% else %}
-                                                <span class="text-muted italic">No especificada</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="text-center">
-                                            <!-- Botones de acción -->
-                                            <div class="btn-group" role="group">
-                                                <!-- Botón editar -->
-                                                <a href="{{ url_for('editar_usuario_form', usuario_id=usuario.id) }}" 
-                                                   class="btn btn-warning btn-sm" 
-                                                   data-bs-toggle="tooltip" 
-                                                   title="Editar usuario">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                
-                                                <!-- Botón eliminar -->
-                                                <form method="POST" 
-                                                      action="{{ url_for('eliminar_usuario', usuario_id=usuario.id) }}" 
-                                                      class="d-inline"
-                                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar a {{ usuario.nombre }}?')">
-                                                    <button type="submit" 
-                                                            class="btn btn-danger btn-sm" 
-                                                            data-bs-toggle="tooltip" 
-                                                            title="Eliminar usuario">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <!-- Mensaje cuando no hay usuarios -->
-                <div class="card shadow-sm">
-                    <div class="card-body text-center py-5">
-                        <i class="fas fa-users-slash fa-4x text-muted mb-3"></i>
-                        <h4 class="text-muted">No hay usuarios registrados</h4>
-                        <p class="text-muted mb-4">
-                            Comienza creando tu primer usuario para gestionar el sistema.
-                        </p>
-                        <a href="{{ url_for('crear_usuario_form') }}" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Crear Primer Usuario
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Tarjeta de información -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card bg-light border-0 shadow-sm">
-                <div class="card-body">
-                    <h6 class="card-title text-uppercase mb-3" style="font-size: 0.8rem; font-weight: bold;">
-                        <i class="fas fa-info-circle text-info"></i> Información del Sistema
-                    </h6>
-                    <div class="row text-center">
-                        <div class="col-md-4">
-                            <p class="mb-0 small text-muted">
-                                <strong>Total:</strong> {{ usuarios|length }} usuarios
-                            </p>
-                        </div>
-                        <div class="col-md-4 border-start border-end">
-                            <p class="mb-0 small text-muted">
-                                <strong>Servidor:</strong> MySQL
-                            </p>
-                        </div>
-                        <div class="col-md-4">
-                            <p class="mb-0 small text-muted">
-                                <strong>Estado:</strong> 
-                                <span class="badge bg-success">En línea</span>
-                            </p>
-                        </div>
-                    </div>
+    {% if usuarios %}
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-list"></i> Usuarios Registrados</h5>
+                <span class="badge bg-primary rounded-pill">{{ usuarios|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usuario in usuarios %}
+                            <tr>
+                                <td><span class="badge bg-secondary">{{ usuario.id }}</span></td>
+                                <td>{{ usuario.nombre }}</td>
+                                <td>{{ usuario.email }}</td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('editar_usuario_form', usuario_id=usuario.id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-user-slash fa-4x text-muted mb-3"></i>
+            <h3>No hay usuarios registrados</h3>
+            <p class="text-muted">Comienza creando tu primer usuario para gestionar el sistema.</p>
+        </div>
+    {% endif %}
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar todos los tooltips de Bootstrap 5
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-    });
-</script>
 {% endblock %}
