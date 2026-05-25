@@ -9,7 +9,6 @@ services:
     ports:
       - "80:5000"
     environment:
-      # CAMBIO: Ahora puedes usar el nombre del servicio 'backend' en vez de la IP rígida
       - BACKEND_URL=http://34.202.230.237:8000
       - PORT=5000
       - DEBUG=False
@@ -18,10 +17,8 @@ services:
       - vpc_front_logs:/app/logs
     restart: always
     networks:
-      # Conectamos el contenedor a la red externa del backend
       - backend_innovatech-net
 
-# Bloque único de networks al final del archivo
 networks:
   backend_innovatech-net:
     external: true
