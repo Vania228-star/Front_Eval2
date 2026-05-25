@@ -4,29 +4,21 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Cargar variables de entorno
 load_dotenv()
 
-# Crear instancia de la aplicación Flask
 app = Flask(__name__)
 
-# CONFIGURACIÓN CRÍTICA: Esto mostrará el error real en la terminal si algo falla
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
 app.secret_key = os.getenv('SECRET_KEY', 'dev_key_12345')
 
-# Habilitar CORS
 CORS(app)
 
-# URL del backend (asegúrate de que sea la correcta)
 BACKEND_URL = 'http://localhost:3000'
-
-# --- RUTAS ---
 
 @app.route('/')
 def index():
     try:
-        # Intentamos obtener la lista de usuarios
         response = requests.get(f'{BACKEND_URL}/api/usuarios', timeout=5)
         if response.status_code == 200:
             return render_template('index.html', usuarios=response.json())
@@ -34,7 +26,6 @@ def index():
             flash(f'Error del servidor: {response.status_code}', 'error')
             return render_template('index.html', usuarios=[])
     except Exception as e:
-        # Si ocurre un error, se imprimirá aquí en tu terminal
         print(f"--- ERROR DE CONEXIÓN ---: {e}")
         flash('No se pudo conectar con el servidor backend', 'error')
         return render_template('index.html', usuarios=[])
@@ -73,5 +64,4 @@ def eliminar_usuario(usuario_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    # Usaremos el puerto 5000 para el frontend
     app.run(host='0.0.0.0', port=5000, debug=True)
