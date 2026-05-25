@@ -63,5 +63,24 @@ def eliminar_usuario(usuario_id):
         flash('Fallo de comunicación con el backend', 'error')
     return redirect(url_for('index'))
 
+@app.route('/editar/<int:usuario_id>', methods=['GET', 'POST'])
+def editar_usuario_form(usuario_id):
+    # Primero obtenemos la lista para buscar al usuario
+    response = requests.get(f'{BACKEND_URL}/api/usuarios')
+    usuarios = response.json() if response.status_code == 200 else []
+    usuario = next((u for u in usuarios if u['id'] == usuario_id), None)
+    
+    if request.method == 'POST':
+        datos = {
+            'nombre': request.form.get('nombre'),
+            'email': request.form.get('email'),
+            'edad': int(request.form.get('edad')) if request.form.get('edad') else None
+        }
+        requests.put(f'{BACKEND_URL}/api/usuarios/{usuario_id}', json=datos)
+        flash('Usuario actualizado', 'success')
+        return redirect(url_for('index'))
+        
+    return render_template('editar_usuario.html', usuario=usuario)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
