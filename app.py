@@ -14,7 +14,7 @@ app.secret_key = os.getenv('SECRET_KEY', 'dev_key_12345')
 
 CORS(app)
 
-BACKEND_URL = 'http://localhost:3000'
+BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:3000')
 
 @app.route('/')
 def index():
@@ -65,7 +65,7 @@ def eliminar_usuario(usuario_id):
 
 @app.route('/editar/<int:usuario_id>', methods=['GET', 'POST'])
 def editar_usuario_form(usuario_id):
-    # Primero obtenemos la lista para buscar al usuario
+    
     response = requests.get(f'{BACKEND_URL}/api/usuarios')
     usuarios = response.json() if response.status_code == 200 else []
     usuario = next((u for u in usuarios if u['id'] == usuario_id), None)

@@ -9,15 +9,18 @@ services:
     ports:
       - "80:5000"
     environment:
-      - BACKEND_URL=http://34.202.230.237:8000
-      - PORT=5000
-      - DEBUG=False
-      - SECRET_KEY=${SECRET_KEY}
+      BACKEND_URL: "http://34.202.230.237:8000"
+      PORT: 5000
+      DEBUG: "False"
+      SECRET_KEY: "${SECRET_KEY}" 
     volumes:
       - vpc_front_logs:/app/logs
     restart: always
     networks:
       - backend_innovatech-net
+
+volumes:
+  vpc_front_logs:
 
 networks:
   backend_innovatech-net:
