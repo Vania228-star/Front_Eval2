@@ -14,7 +14,7 @@ app.secret_key = os.getenv('SECRET_KEY', 'dev_key_12345')
 
 CORS(app)
 
-BACKEND_URL = os.getenv('BACKEND_URL', 'http://localhost:3000')
+BACKEND_URL = os.getenv('BACKEND_URL', 'http://44.198.58.197:3000')
 
 @app.route('/')
 def index():
@@ -83,4 +83,4 @@ def editar_usuario_form(usuario_id):
     return render_template('editar_usuario.html', usuario=usuario)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
