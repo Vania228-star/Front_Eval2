@@ -9,7 +9,7 @@ services:
     ports:
       - "80:5000"
     environment:
-      BACKEND_URL: "http://52.86.254.127:3000"
+      BACKEND_URL: "http://44.198.58.197:3000"
       PORT: 5000
       DEBUG: "False"
       SECRET_KEY: "${SECRET_KEY}" 
